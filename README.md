@@ -1,4 +1,4 @@
 
 ```
-$ uv run python hello.py
+$ uv run python main.py
 ```
