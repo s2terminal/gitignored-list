@@ -25,9 +25,11 @@ def _run_cmd(command: str, workdir: Path) -> str:
 
 def list_git_projects(root_path: Path) -> "list[Path]":
     # 指定したパスの中にあるgit管理されたディレクトリをリストアップする
-    # TODO: 実装する
-    # find /home/user/projects -name ".git" -type d -print0 | xargs -0 -I {} dirname {}
-    return []
+    project_path_list = _run_cmd(
+        'find ./ -name ".git" -type d -print0 | xargs -0 -I {} dirname {}',
+        root_path
+    ).split("\n")
+    return [ (root_path / Path(p)).resolve() for p in project_path_list if len(p) > 0 ]
 
 # git管理下のプロジェクトパスを受け取り、重要そうなファイルをリストする
 def list_remained_files(project_path: Path, ignores: "list[str]") -> "list[Path]":
@@ -43,6 +45,8 @@ if __name__ == "__main__":
     with open("config.yaml", "r") as file:
         settings = Settings(**yaml.safe_load(file))
 
-    pprint.pp(
-        list_remained_files(Path("./"), ignores=settings.ignores)
-    )
+    pprint.pp(list_git_projects(Path("../")))
+
+    # pprint.pp(
+    #     list_remained_files(Path("./"), ignores=settings.ignores)
+    # )
