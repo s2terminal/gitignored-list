@@ -1,8 +1,18 @@
 base_path: ./
 ignores:
+  - \.cache/
+  - debug/
+  - tmp/
+  - target/
+  - dist/
+  - \.log$
+  - \.lock$
+  - builds/
   - node_modules/
   - webpack/
   - __pycache__/
   - \.next/
   - \.astro/
   - \.venv/
+  - \.ipynb_checkpoints/
+  - \.ruby-lsp/

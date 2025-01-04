@@ -10,8 +10,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
-logger.setLevel(logging.DEBUG)
-handler.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
+handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 class Settings(BaseSettings):
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     base_path: str
 
 def _run_cmd(command: str, workdir: Path) -> str:
-    logger.info(command)
+    logger.debug(command)
     result = subprocess.run(command, shell=True, cwd=workdir, capture_output=True)
     return result.stdout.decode()
 
@@ -45,8 +45,8 @@ if __name__ == "__main__":
     with open("config.yaml", "r") as file:
         settings = Settings(**yaml.safe_load(file))
 
-    pprint.pp(list_git_projects(Path("../")))
-
-    # pprint.pp(
-    #     list_remained_files(Path("./"), ignores=settings.ignores)
-    # )
+    for project_path in list_git_projects(Path("../")):
+        print("##", project_path)
+        pprint.pp(
+            list_remained_files(project_path, ignores=settings.ignores)
+        )
