@@ -39,7 +39,8 @@ def list_remained_files(project_path: Path, unnecessaries: "list[str]") -> "list
         workdir=project_path
     ).split("\n")
     # TODO: シンボリックリンクでプロジェクト外を見ているのを削除する
-    return [ (project_path / Path(p)).resolve() for p in path_str_list if len(p) > 0 ]
+    abs_path_list = [ (project_path / Path(p)).resolve() for p in path_str_list if len(p) > 0 ]
+    return list(filter(lambda p: p.exists(), abs_path_list))
 
 if __name__ == "__main__":
     with open("config.yaml", "r") as file:
