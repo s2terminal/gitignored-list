@@ -1,0 +1,7 @@
+ignores:
+  - node_modules/
+  - webpack/
+  - __pycache__/
+  - \.next/
+  - \.astro/
+  - \.venv/
