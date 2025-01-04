@@ -15,7 +15,7 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 class Settings(BaseSettings):
-    ignores: "list[str]"
+    unnecessaries: "list[str]"
     base_path: str
 
 def _run_cmd(command: str, workdir: Path) -> str:
@@ -32,8 +32,8 @@ def list_git_projects(root_path: Path) -> "list[Path]":
     return [ (root_path / Path(p)).resolve() for p in project_path_list if len(p) > 0 ]
 
 # git管理下のプロジェクトパスを受け取り、重要そうなファイルをリストする
-def list_remained_files(project_path: Path, ignores: "list[str]") -> "list[Path]":
-    grep_cmd = f"grep -v -e {' -e '.join(ignores)}"
+def list_remained_files(project_path: Path, unnecessaries: "list[str]") -> "list[Path]":
+    grep_cmd = f"grep -v -e {' -e '.join(unnecessaries)}"
     path_str_list = _run_cmd(
         command=f"git ls-files --other --ignored --exclude-standard | {grep_cmd} ",
         workdir=project_path
@@ -48,5 +48,5 @@ if __name__ == "__main__":
     for project_path in list_git_projects(Path("../")):
         print("##", project_path)
         pprint.pp(
-            list_remained_files(project_path, ignores=settings.ignores)
+            list_remained_files(project_path, unnecessaries=settings.unnecessaries)
         )

@@ -1,5 +1,5 @@
 base_path: ./
-ignores:
+unnecessaries:
   - \.cache/
   - debug/
   - tmp/
