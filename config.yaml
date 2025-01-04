@@ -1,3 +1,4 @@
+base_path: ./
 ignores:
   - node_modules/
   - webpack/

@@ -1,4 +1,4 @@
 
 ```
-$ uv run python main.py
+$ uv run main.py
 ```
