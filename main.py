@@ -1,9 +1,15 @@
 import subprocess
 from pathlib import Path
 import pprint
+from typing import Tuple, Type
 
-import yaml
-from pydantic_settings import BaseSettings
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    YamlConfigSettingsSource,
+    CliApp
+)
 
 import sys
 import logging
@@ -15,8 +21,29 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(yaml_file='config.yaml')
+
     unnecessaries: "list[str]"
-    base_path: str
+    path: str
+
+    def cli_cmd(self) -> None:
+        for project_path in list_git_projects(Path(self.path)):
+            print("##", project_path)
+            pprint.pp(
+                list_remained_files(project_path, unnecessaries=self.unnecessaries)
+            )
+
+    # https://docs.pydantic.dev/latest/concepts/pydantic_settings/#other-settings-source
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        return (YamlConfigSettingsSource(settings_cls),)
 
 def _run_cmd(command: str, workdir: Path) -> str:
     logger.debug(command)
@@ -29,6 +56,7 @@ def list_git_projects(root_path: Path) -> "list[Path]":
         'find ./ -name ".git" -type d -print0 | xargs -0 -I {} dirname {}',
         root_path
     ).split("\n")
+    # TODO: 相対パスを保持する
     return [ (root_path / Path(p)).resolve() for p in project_path_list if len(p) > 0 ]
 
 # git管理下のプロジェクトパスを受け取り、重要そうなファイルをリストする
@@ -43,11 +71,4 @@ def list_remained_files(project_path: Path, unnecessaries: "list[str]") -> "list
     return list(filter(lambda p: p.exists(), abs_path_list))
 
 if __name__ == "__main__":
-    with open("config.yaml", "r") as file:
-        settings = Settings(**yaml.safe_load(file))
-
-    for project_path in list_git_projects(Path("../")):
-        print("##", project_path)
-        pprint.pp(
-            list_remained_files(project_path, unnecessaries=settings.unnecessaries)
-        )
+    CliApp.run(Settings)
