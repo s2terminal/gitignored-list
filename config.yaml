@@ -5,6 +5,7 @@ unnecessaries:
   - tmp/
   - target/
   - dist/
+  - public/
   - \.log$
   - \.lock$
   - builds/
@@ -16,3 +17,4 @@ unnecessaries:
   - \.venv/
   - \.ipynb_checkpoints/
   - \.ruby-lsp/
+  - \.sqlite3$
