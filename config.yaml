@@ -8,6 +8,7 @@ unnecessaries:
   - \.log$
   - \.lock$
   - builds/
+  - build/
   - node_modules/
   - webpack/
   - __pycache__/

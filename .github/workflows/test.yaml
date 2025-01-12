@@ -32,7 +32,7 @@ jobs:
       - name: ビルド
         run: uv run pyinstaller main.py \
               --onefile \
-              --distpath /linux/dist \
+              --distpath /linux/dist
 
       - name: artifactのアップロード
         uses: actions/upload-artifact@v4
