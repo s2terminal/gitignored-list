@@ -16,7 +16,7 @@ def list_git_projects(root_path: Path) -> "list[Project]":
         'find ./ -name ".git" -type d -print0 | xargs -0 -I {} dirname {}',
         root_path
     ).split("\n")
-    return [ Project(path=( root_path / Path(p)), name=p) for p in project_path_list if len(p) > 0 ]
+    return Project.to_projects(root_path, project_path_list)
 
 def list_remained_files(project: Project, unnecessaries: "list[str]") -> "list[Path]":
     """
@@ -28,6 +28,4 @@ def list_remained_files(project: Project, unnecessaries: "list[str]") -> "list[P
         command=f"git ls-files --other --ignored --exclude-standard | {grep_cmd} ",
         workdir=project.path
     ).split("\n")
-    # TODO: シンボリックリンクでプロジェクト外を見ているのを削除する
-    path_list = [ (project.path / Path(p)) for p in path_str_list if len(p) > 0 ]
-    return list(filter(lambda p: p.exists(), path_list))
+    return project.hold_path_list(path_str_list)

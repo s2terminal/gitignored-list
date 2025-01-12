@@ -18,3 +18,16 @@ class Project(BaseModel):
     def validate_path(self):
         if not self.path.exists():
             raise Exception("存在しないパスです", self.path)
+
+    # プロジェクトの管理下にある重要そうなファイル一覧を受け取って、コピー可能なリストにして返す
+    def hold_path_list(self, path_str_list: list[str]) -> list[Path]:
+        # TODO: シンボリックリンクでプロジェクト外を見ているのを削除する
+        path_list = [ (self.path / Path(p)) for p in path_str_list if len(p) > 0 ]
+        return list(filter(lambda p: p.exists(), path_list))
+
+    @classmethod
+    def to_projects(cls, root_path: Path, pj_path_list: list[str]) -> "list[Project]":
+        """
+        git管理下のプロジェクトへのパスの文字列を受け取って、プロジェクトオブジェクトを返す
+        """
+        return [ cls(path=( root_path / Path(p)), name=p) for p in pj_path_list if len(p) > 0 ]
