@@ -30,7 +30,8 @@ jobs:
         run: uv run python -m pytest
 
       - name: ビルド
-        run: uv run pyinstaller main.py \
+        run: |
+            uv run pyinstaller main.py \
               --onefile \
               --distpath /linux/dist
 
