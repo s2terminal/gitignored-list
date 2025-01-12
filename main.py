@@ -1,6 +1,7 @@
 from pathlib import Path
-from os.path import getsize
-from typing import Tuple, Type
+import os
+import shutil
+from typing import Tuple, Type, Optional
 
 from pydantic_settings import (
     BaseSettings,
@@ -17,12 +18,21 @@ class Settings(BaseSettings):
 
     unnecessaries: "list[str]"
     path: str
+    copy_path: Optional[str] = None
 
     def cli_cmd(self) -> None:
-        for project in list_git_projects(Path(self.path)):
-            print("##", project)
-            for hold_file in list_hold_files(project, unnecessaries=self.unnecessaries):
-                print(getsize(project.path / hold_file), hold_file)
+        if self.copy_path is not None:
+            os.mkdir(self.copy_path) # 存在していたら例外
+        for pj in list_git_projects(Path(self.path)):
+            print("##", pj)
+            for hold_file in list_hold_files(pj, unnecessaries=self.unnecessaries):
+                copy_from_path = pj.path / hold_file
+                if self.copy_path is not None:
+                    copy_to_path = Path(self.copy_path) / pj.name / hold_file
+                    os.makedirs(copy_to_path.parent, exist_ok=True) # 再帰的に作成、存在していてもOK
+                    shutil.copy(copy_from_path, copy_to_path)
+                else:
+                    print(os.path.getsize(copy_from_path), hold_file)
 
     # https://docs.pydantic.dev/latest/concepts/pydantic_settings/#other-settings-source
     @classmethod

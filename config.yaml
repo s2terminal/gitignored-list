@@ -17,3 +17,4 @@ unnecessaries:
   - \.ipynb_checkpoints/
   - \.ruby-lsp/
   - \.sqlite3$
+  - gitignored-list_copypath/
