@@ -7,7 +7,7 @@ on:
     paths:
       - 'src/**'
       - 'test/**'
-      - '.github/workflows'
+      - '.github/workflows/**'
 
 jobs:
   uv-example:
