@@ -18,7 +18,7 @@ def list_git_projects(root_path: Path) -> "list[Project]":
     ).split("\n")
     return Project.to_projects(root_path, project_path_list)
 
-def list_remained_files(project: Project, unnecessaries: "list[str]") -> "list[Path]":
+def list_hold_files(project: Project, unnecessaries: "list[str]") -> "list[Path]":
     """
     git管理プロジェクトを受け取り、重要そうなファイルをリストする
     プロジェクトパスからの相対パスのリストを返す

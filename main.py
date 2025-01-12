@@ -1,5 +1,5 @@
 from pathlib import Path
-import pprint
+from os.path import getsize
 from typing import Tuple, Type
 
 from pydantic_settings import (
@@ -10,7 +10,7 @@ from pydantic_settings import (
     CliApp
 )
 
-from src.gitignored_list.run_cmd import list_git_projects, list_remained_files
+from src.gitignored_list.run_cmd import list_git_projects, list_hold_files
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(yaml_file='config.yaml')
@@ -21,9 +21,8 @@ class Settings(BaseSettings):
     def cli_cmd(self) -> None:
         for project in list_git_projects(Path(self.path)):
             print("##", project)
-            pprint.pp(
-                list_remained_files(project, unnecessaries=self.unnecessaries)
-            )
+            for hold_file in list_hold_files(project, unnecessaries=self.unnecessaries):
+                print(getsize(project.path / hold_file), hold_file)
 
     # https://docs.pydantic.dev/latest/concepts/pydantic_settings/#other-settings-source
     @classmethod
