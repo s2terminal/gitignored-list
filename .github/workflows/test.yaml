@@ -1,10 +1,11 @@
-name: テスト
+name: テスト,ビルド
 
 on:
   push:
     branches:
       - main
     paths:
+      - 'main.py'
       - 'src/**'
       - 'test/**'
       - '.github/workflows/**'
@@ -17,13 +18,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv
+      - name: uvインストール
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
-      - name: Install the project
+      - name: パッケージインストール
         run: uv sync --all-extras --dev
 
-      - name: Run tests
+      - name: テスト
         run: uv run python -m pytest
+
+      - name: ビルド
+        run: uv run pyinstaller main.py \
+              --onefile \
+              --distpath /linux/dist \
+
+      - name: artifactのアップロード
+        uses: actions/upload-artifact@v2
+        with:
+          name: result-artifact
+          path: ./linux/dist/main
