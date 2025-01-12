@@ -1,5 +1,14 @@
 name: テスト
 
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - '.github/workflows'
+
 jobs:
   uv-example:
     name: python
