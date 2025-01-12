@@ -11,4 +11,12 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.3.4",
+    "pytest-cov>=5.0.0",
+]
+
+[tool.coverage.run]
+omit = [
+    "test/*",
+    "*/*_test.py",
+    "*/test_*.py",
 ]
