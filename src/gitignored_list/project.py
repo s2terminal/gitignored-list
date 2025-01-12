@@ -21,11 +21,11 @@ class Project(BaseModel):
 
     def hold_path_list(self, path_str_list: list[str]) -> list[Path]:
         """
-        プロジェクトの管理下にある重要そうなファイル一覧を受け取って、コピー可能なリストにして返す
+        プロジェクトの管理下にある重要そうなファイル一覧を受け取って、pj.pathからのコピー可能なリストにして返す
         """
         # TODO: シンボリックリンクでプロジェクト外を見ているのを削除する
-        path_list = [ (self.path / Path(p)) for p in path_str_list if len(p) > 0 ]
-        return list(filter(lambda p: p.exists(), path_list))
+        path_list = [ Path(p) for p in path_str_list if len(p) > 0 ]
+        return list(filter(lambda p: (self.path / p).exists(), path_list))
 
     @classmethod
     def to_projects(cls, root_path: Path, pj_path_list: list[str]) -> "list[Project]":

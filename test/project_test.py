@@ -29,4 +29,14 @@ def test_hold_path():
     pj = Project(path=Path("./src"), name="src")
     hold_path_list = pj.hold_path_list(["gitignored_list/project.py"])
     assert len(hold_path_list) == 1
-    assert hold_path_list[0] == Path("./src/gitignored_list/project.py")
+    assert hold_path_list[0] == Path("./gitignored_list/project.py")
+    # project_path / hold_file が存在すること
+    assert (pj.path / hold_path_list[0]).exists()
+    # save_path / project_name / hold_file が作れること（作成するため、存在しなくてOK）
+    save_path = Path("save_path")
+    assert save_path / Path(pj.name) / hold_path_list[0] == Path("save_path/src/gitignored_list/project.py")
+
+def test_not_exist_hold_path():
+    pj = Project(path=Path("./src"), name="src")
+    hold_path_list = pj.hold_path_list(["not_exist_path/project.py"])
+    assert len(hold_path_list) == 0
