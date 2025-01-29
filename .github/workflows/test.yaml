@@ -44,5 +44,5 @@ jobs:
       - name: artifactのアップロード
         uses: actions/upload-artifact@v4
         with:
-          name: result-artifact
+          name: result-artifact-${{ matrix.runs-on }}
           path: ./dist/main
